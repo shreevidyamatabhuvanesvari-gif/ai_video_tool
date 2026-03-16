@@ -1,35 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
+
 <title>AI Video Tool</title>
 
 <style>
 
 body{
-font-family:Arial;
-background:#f4f4f4;
+font-family:Arial, sans-serif;
+background:#f2f4f8;
 text-align:center;
-margin-top:60px;
+margin:0;
+padding:0;
+}
+
+header{
+background:#1e88e5;
+color:white;
+padding:20px;
+font-size:24px;
 }
 
 .container{
+margin-top:40px;
 background:white;
+width:400px;
+margin-left:auto;
+margin-right:auto;
 padding:30px;
-width:350px;
-margin:auto;
 border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.2);
+box-shadow:0 4px 15px rgba(0,0,0,0.2);
 }
 
 button{
-padding:10px 20px;
-font-size:16px;
-background:#007BFF;
-color:white;
+width:200px;
+padding:12px;
+margin:10px;
 border:none;
 border-radius:5px;
+background:#1e88e5;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1565c0;
+}
+
+input[type=file]{
+margin:15px;
+}
+
+.status{
+margin-top:20px;
+font-weight:bold;
+color:#333;
+}
+
+footer{
+margin-top:40px;
+font-size:12px;
+color:#777;
 }
 
 </style>
@@ -38,21 +73,67 @@ border-radius:5px;
 
 <body>
 
+<header>
+
+AI Video Tool
+
+</header>
+
 <div class="container">
 
-<h2>AI Video Tool</h2>
+<h3>Upload Video</h3>
 
-<p>Upload Video</p>
+<input type="file" id="videoFile">
 
-<input type="file">
+<br>
 
-<br><br>
+<button onclick="uploadVideo()">Upload Video</button>
 
-<button>Upload</button>
+<br>
+
+<button onclick="processVideo()">Process Video</button>
+
+<br>
+
+<button onclick="downloadTranscript()">Download Transcript</button>
+
+<br>
+
+<button onclick="downloadSubtitle()">Download Subtitle</button>
+
+<div class="status" id="status">
+
+Status: Waiting for upload
 
 </div>
 
+</div>
+
+<footer>
+
+Termux AI Video Processing System
+
+</footer>
+
+<script>
+
+function uploadVideo(){
+document.getElementById("status").innerText="Uploading video...";
+}
+
+function processVideo(){
+document.getElementById("status").innerText="Processing video...";
+}
+
+function downloadTranscript(){
+document.getElementById("status").innerText="Downloading transcript...";
+}
+
+function downloadSubtitle(){
+document.getElementById("status").innerText="Downloading subtitle...";
+}
+
+</script>
+
 </body>
-
 </html>
-
