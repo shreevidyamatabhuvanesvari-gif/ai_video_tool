@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Video Tool</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+.panel{
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+max-width:420px;
+margin:auto;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+h2{
+margin-bottom:10px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+font-size:15px;
+border:none;
+border-radius:8px;
+background:#22c55e;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#16a34a;
+}
+
+.section{
+display:none;
+margin-top:15px;
+}
+
+input{
+margin-top:10px;
+}
+
+video{
+width:100%;
+margin-top:10px;
+border-radius:10px;
+}
+
+.chat-box{
+margin-top:10px;
+text-align:left;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="panel">
+
+<h2>🎬 AI Video Tool</h2>
+<p>WhatsApp • Instagram • Facebook</p>
+
+<!-- NAV BUTTONS -->
+
+<button onclick="showSection('video')">🎬 Video Tool</button>
+<button onclick="showSection('chat')">🤖 AI Chat</button>
+<button onclick="showSection('voice')">🎤 Voice</button>
+<button onclick="showSection('info')">ℹ️ Info</button>
+
+<!-- VIDEO SECTION -->
+
+<div id="video" class="section">
+
+<input type="file" id="videoFile" accept="video/*">
+
+<button onclick="uploadVideo()">🚀 Process Video</button>
+
+<p id="status"></p>
+
+<video id="preview" controls></video>
+
+<a id="downloadLink" style="display:none;" download="video.mp4">
+<button>⬇ Download</button>
+</a>
+
+</div>
+
+<!-- CHAT SECTION -->
+
+<div id="chat" class="section">
+
+<div class="chat-box">
+
+<input id="chatInput" placeholder="Ask AI...">
+
+<button onclick="sendMessage()">Send</button>
+
+<p id="chatResponse"></p>
+
+</div>
+
+</div>
+
+<!-- VOICE SECTION -->
+
+<div id="voice" class="section">
+
+<button onclick="startVoice()">🎤 Speak</button>
+
+<p id="voiceText"></p>
+
+</div>
+
+<!-- INFO SECTION -->
+
+<div id="info" class="section">
+
+<p>AI Video Tool v1</p>
+<p>Powered by Termux + AI</p>
+
+</div>
+
+</div>
+
+<script>
+
+// SECTION SWITCH
+function showSection(id){
+
+let sections = document.getElementsByClassName("section")
+
+for(let i=0;i<sections.length;i++){
+sections[i].style.display="none"
+}
+
+document.getElementById(id).style.display="block"
+}
+
+// VIDEO UPLOAD
+function uploadVideo(){
+
+let file = document.getElementById("videoFile").files[0]
+
+if(!file){
+alert("Select video first")
+return
+}
+
+document.getElementById("status").innerText="Uploading..."
+
+let formData = new FormData()
+formData.append("video", file)
+
+fetch("http://127.0.0.1:8000/upload",{
+method:"POST",
+body:formData
+})
+.then(res=>res.text())
+.then(data=>{
+
+document.getElementById("status").innerText="Done"
+
+let video=document.getElementById("preview")
+video.src="http://127.0.0.1:8000/outputs/vertical.mp4"
+
+let link=document.getElementById("downloadLink")
+link.href=video.src
+link.style.display="block"
+
+})
+
+}
+
+// CHAT
+function sendMessage(){
+
+let msg=document.getElementById("chatInput").value
+
+fetch("http://127.0.0.1:8000/chat",{
+method:"POST",
+body:msg
+})
+.then(res=>res.text())
+.then(data=>{
+document.getElementById("chatResponse").innerText=data
+})
+
+}
+
+// VOICE
+function startVoice(){
+
+let recognition=new webkitSpeechRecognition()
+recognition.lang="hi-IN"
+
+recognition.onresult=function(event){
+
+let text=event.results[0][0].transcript
+
+document.getElementById("voiceText").innerText=text
+document.getElementById("chatInput").value=text
+
+}
+
+recognition.start()
+
+}
+
+</script>
+
+</body>
+</html>
