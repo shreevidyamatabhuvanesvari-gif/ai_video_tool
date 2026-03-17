@@ -151,6 +151,15 @@ sections[i].style.display="none"
 document.getElementById(id).style.display="block"
 }
 
+// 🔊 TTS FUNCTION (ADDED)
+function speakText(text){
+let speech = new SpeechSynthesisUtterance(text)
+speech.lang = "hi-IN"
+speech.rate = 1
+speech.pitch = 1
+speechSynthesis.speak(speech)
+}
+
 // VIDEO UPLOAD
 function uploadVideo(){
 
@@ -198,6 +207,10 @@ body:msg
 .then(res=>res.text())
 .then(data=>{
 document.getElementById("chatResponse").innerText=data
+
+// 🔊 बोलकर जवाब (ADDED)
+speakText(data)
+
 })
 
 }
@@ -214,6 +227,9 @@ let text=event.results[0][0].transcript
 
 document.getElementById("voiceText").innerText=text
 document.getElementById("chatInput").value=text
+
+// 🔊 बोले गए text को भी बोलना (ADDED)
+speakText(text)
 
 }
 
