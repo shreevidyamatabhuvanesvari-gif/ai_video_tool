@@ -3,34 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Subtitle App</title>
+  <title>AI Video Subtitle Tool</title>
 
-  <!-- CSS -->
+  <!-- Main CSS -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Future CSS (assets folder) -->
+  <link rel="stylesheet" href="assets/css/main.css">
+
 </head>
 
 <body>
 
   <div class="container">
 
-    <h1>🎬 Video Subtitle App</h1>
+    <h1>🎬 AI Video Subtitle Tool</h1>
 
     <!-- Video Upload -->
-    <input type="file" id="videoInput" accept="video/*">
+    <div class="upload-section">
+      <input type="file" id="videoInput" accept="video/*">
+    </div>
 
     <!-- Video Player -->
-    <video id="videoPlayer" controls></video>
+    <div class="video-section">
+      <video id="videoPlayer" controls></video>
+    </div>
 
     <!-- Subtitle Display -->
-    <div id="subtitleBox">यहाँ subtitles दिखाई देंगे...</div>
+    <div class="subtitle-section">
+      <p id="subtitleBox">यहाँ subtitles दिखाई देंगे...</p>
+    </div>
 
-    <!-- Start Button -->
-    <button id="startBtn">🎤 Start Speech Recognition</button>
+    <!-- Controls -->
+    <div class="controls">
+      <button id="startBtn">🎤 Start Recognition</button>
+      <button id="stopBtn">⛔ Stop</button>
+    </div>
 
   </div>
 
-  <!-- JS -->
+  <!-- Main JS -->
   <script src="script.js"></script>
+
+  <!-- Future JS (assets folder) -->
+  <script src="assets/js/main.js"></script>
 
 </body>
 </html>
