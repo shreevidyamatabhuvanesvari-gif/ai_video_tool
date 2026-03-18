@@ -5,17 +5,16 @@ const subtitleBox = document.getElementById("subtitleBox");
 const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
 
-// Speech Recognition
-let recognition = null;
+let recognition;
 let isListening = false;
 let finalTranscript = "";
 
-// API Detect
+// Check support
 const SpeechRecognitionAPI =
   window.SpeechRecognition || window.webkitSpeechRecognition;
 
 if (!SpeechRecognitionAPI) {
-  alert("❌ Speech Recognition support नहीं है");
+  alert("❌ यह browser support नहीं करता (Chrome mobile में issue है)");
 } else {
   recognition = new SpeechRecognitionAPI();
   recognition.continuous = true;
@@ -23,7 +22,7 @@ if (!SpeechRecognitionAPI) {
   recognition.lang = "hi-IN";
 }
 
-// 🎥 Load Video
+// Load video
 videoInput.addEventListener("change", function () {
   const file = this.files[0];
   if (file) {
@@ -31,45 +30,33 @@ videoInput.addEventListener("change", function () {
   }
 });
 
-// 🎤 Start Recognition (Internal mic optimization)
-async function startRecognition() {
-  if (!recognition || isListening) return;
+// 🎤 Start (ONLY via button click)
+startBtn.addEventListener("click", async () => {
+  if (!recognition) return;
 
   try {
-    // 🔥 IMPORTANT: echoCancellation OFF
-    await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: false,
-        noiseSuppression: false,
-        autoGainControl: false
-      }
-    });
+    // Mic permission
+    await navigator.mediaDevices.getUserMedia({ audio: true });
 
     recognition.start();
     isListening = true;
 
-    subtitleBox.innerText = "🎤 Internal audio capture active...";
+    subtitleBox.innerText = "🎤 Listening... बोलिए";
 
   } catch (e) {
-    alert("🎤 Mic permission जरूरी है");
+    alert("Mic permission नहीं मिला");
   }
-}
+});
 
 // ⛔ Stop
-function stopRecognition() {
-  if (!recognition) return;
-
-  if (isListening) {
+stopBtn.addEventListener("click", () => {
+  if (recognition && isListening) {
     recognition.stop();
     isListening = false;
   }
-}
+});
 
-// Buttons
-startBtn.addEventListener("click", startRecognition);
-stopBtn.addEventListener("click", stopRecognition);
-
-// 🎧 Result Handling
+// 🎧 Result
 if (recognition) {
   recognition.onresult = (event) => {
     let interim = "";
@@ -87,33 +74,13 @@ if (recognition) {
     subtitleBox.innerText = finalTranscript + "\n" + interim;
   };
 
-  // Restart safely
-  recognition.onend = () => {
-    if (isListening) {
-      setTimeout(() => {
-        try {
-          recognition.start();
-        } catch (e) {}
-      }, 500);
-    }
-  };
-
   recognition.onerror = (event) => {
     console.log("Error:", event.error);
+    alert("Error: " + event.error);
+  };
 
-    if (event.error === "not-allowed") {
-      alert("Mic permission allow करें");
-      isListening = false;
-    }
+  recognition.onend = () => {
+    console.log("Recognition stopped");
+    isListening = false;
   };
 }
-
-// 🎬 Sync with video
-videoPlayer.addEventListener("play", async () => {
-  videoPlayer.muted = false;
-
-  await startRecognition();
-});
-
-videoPlayer.addEventListener("pause", stopRecognition);
-videoPlayer.addEventListener("ended", stopRecognition);
