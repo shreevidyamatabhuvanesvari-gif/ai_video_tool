@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Video Tool</title>
+<title>Voice Extractor</title>
 
 <style>
-
 body{
 font-family:Arial;
 background:#0f172a;
@@ -19,221 +17,93 @@ padding:20px;
 background:#1e293b;
 padding:20px;
 border-radius:15px;
-max-width:420px;
+max-width:400px;
 margin:auto;
-box-shadow:0 0 20px rgba(0,0,0,0.5);
-}
-
-h2{
-margin-bottom:10px;
 }
 
 button{
 width:100%;
 padding:12px;
 margin-top:10px;
-font-size:15px;
 border:none;
 border-radius:8px;
 background:#22c55e;
 color:white;
-cursor:pointer;
 }
 
-button:hover{
-background:#16a34a;
-}
-
-.section{
-display:none;
-margin-top:15px;
-}
-
-input{
-margin-top:10px;
-}
-
-video{
+audio{
 width:100%;
 margin-top:10px;
-border-radius:10px;
 }
-
-.chat-box{
-margin-top:10px;
-text-align:left;
-}
-
 </style>
-
 </head>
 
 <body>
 
 <div class="panel">
 
-<h2>🎬 AI Video Tool</h2>
-<p>WhatsApp • Instagram • Facebook</p>
+<h2>🎤 Voice Extractor</h2>
 
-<!-- NAV BUTTONS -->
+<input type="file" id="file" accept="audio/*,video/*">
 
-<button onclick="showSection('video')">🎬 Video Tool</button>
-<button onclick="showSection('chat')">🤖 AI Chat</button>
-<button onclick="showSection('voice')">🎤 Voice</button>
-<button onclick="showSection('info')">ℹ️ Info</button>
-
-<!-- VIDEO SECTION -->
-
-<div id="video" class="section">
-
-<input type="file" id="videoFile" accept="video/*">
-
-<button onclick="uploadVideo()">🚀 Process Video</button>
+<button onclick="process()">🚀 Remove Music</button>
 
 <p id="status"></p>
 
-<video id="preview" controls></video>
+<audio id="audio" controls></audio>
 
-<a id="downloadLink" style="display:none;" download="video.mp4">
+<a id="download" style="display:none;" download="voice.wav">
 <button>⬇ Download</button>
 </a>
 
 </div>
 
-<!-- CHAT SECTION -->
-
-<div id="chat" class="section">
-
-<div class="chat-box">
-
-<input id="chatInput" placeholder="Ask AI...">
-
-<button onclick="sendMessage()">Send</button>
-
-<p id="chatResponse"></p>
-
-</div>
-
-</div>
-
-<!-- VOICE SECTION -->
-
-<div id="voice" class="section">
-
-<button onclick="startVoice()">🎤 Speak</button>
-
-<p id="voiceText"></p>
-
-</div>
-
-<!-- INFO SECTION -->
-
-<div id="info" class="section">
-
-<p>AI Video Tool v1</p>
-<p>Powered by Termux + AI</p>
-
-</div>
-
-</div>
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
 
 <script>
 
-// SECTION SWITCH
-function showSection(id){
+const { createFFmpeg, fetchFile } = FFmpeg;
 
-let sections = document.getElementsByClassName("section")
+const ffmpeg = createFFmpeg({ log: true });
 
-for(let i=0;i<sections.length;i++){
-sections[i].style.display="none"
-}
+async function process(){
 
-document.getElementById(id).style.display="block"
-}
-
-// 🔊 TTS FUNCTION (ADDED)
-function speakText(text){
-let speech = new SpeechSynthesisUtterance(text)
-speech.lang = "hi-IN"
-speech.rate = 1
-speech.pitch = 1
-speechSynthesis.speak(speech)
-}
-
-// VIDEO UPLOAD
-function uploadVideo(){
-
-let file = document.getElementById("videoFile").files[0]
+let file = document.getElementById("file").files[0];
 
 if(!file){
-alert("Select video first")
-return
+alert("File select करें");
+return;
 }
 
-document.getElementById("status").innerText="Uploading..."
+document.getElementById("status").innerText="Processing...";
 
-let formData = new FormData()
-formData.append("video", file)
-
-fetch("http://127.0.0.1:8000/upload",{
-method:"POST",
-body:formData
-})
-.then(res=>res.text())
-.then(data=>{
-
-document.getElementById("status").innerText="Done"
-
-let video=document.getElementById("preview")
-video.src="http://127.0.0.1:8000/outputs/vertical.mp4"
-
-let link=document.getElementById("downloadLink")
-link.href=video.src
-link.style.display="block"
-
-})
-
+if(!ffmpeg.isLoaded()){
+await ffmpeg.load();
 }
 
-// CHAT
-function sendMessage(){
+// input
+ffmpeg.FS("writeFile", "input.mp4", await fetchFile(file));
 
-let msg=document.getElementById("chatInput").value
+// 🎯 VOICE FOCUS FILTER
+await ffmpeg.run(
+"-i", "input.mp4",
+"-af",
+"highpass=f=200,lowpass=f=3000,afftdn=nf=-25",
+"output.wav"
+);
 
-fetch("http://127.0.0.1:8000/chat",{
-method:"POST",
-body:msg
-})
-.then(res=>res.text())
-.then(data=>{
-document.getElementById("chatResponse").innerText=data
+// output
+let data = ffmpeg.FS("readFile", "output.wav");
 
-// 🔊 बोलकर जवाब (ADDED)
-speakText(data)
+let url = URL.createObjectURL(new Blob([data.buffer], {type: "audio/wav"}));
 
-})
+document.getElementById("audio").src = url;
 
-}
+let link = document.getElementById("download");
+link.href = url;
+link.style.display="block";
 
-// VOICE
-function startVoice(){
-
-let recognition=new webkitSpeechRecognition()
-recognition.lang="hi-IN"
-
-recognition.onresult=function(event){
-
-let text=event.results[0][0].transcript
-
-document.getElementById("voiceText").innerText=text
-document.getElementById("chatInput").value=text
-
-// 🔊 बोले गए text को भी बोलना (ADDED)
-speakText(text)
-
-}
-
-recognition.start()
+document.getElementById("status").innerText="Done";
 
 }
 
