@@ -16,55 +16,45 @@ function formatTime(seconds) {
 document.addEventListener("DOMContentLoaded", () => {
   const video = document.getElementById("videoPlayer");
   const subtitleBox = document.getElementById("subtitleBox");
-
   if (!video) return;
 
-  // Show current time on console (debug purpose)
+  // Log current video time (debugging)
   video.addEventListener("timeupdate", () => {
-    const current = formatTime(video.currentTime);
-    console.log("⏱️ Video Time:", current);
+    console.log("⏱️ Video Time:", formatTime(video.currentTime));
   });
 
-  // When video is loaded
+  // When video metadata is loaded (duration, etc.)
   video.addEventListener("loadedmetadata", () => {
     console.log("🎥 Video duration:", formatTime(video.duration));
   });
 
-  // Error handling
+  // Handle video load errors
   video.addEventListener("error", () => {
     alert("❌ Video load नहीं हुआ");
   });
 
   // ===============================
-  // 📝 Subtitle Styling Enhancement
+  // 📝 Subtitle Flash Effect
   // ===============================
-
   if (subtitleBox) {
     subtitleBox.style.transition = "all 0.3s ease";
-
-    // Flash effect when subtitle updates
+    // Flash effect: fade opacity on content change
     const observer = new MutationObserver(() => {
       subtitleBox.style.opacity = "0.5";
       setTimeout(() => {
         subtitleBox.style.opacity = "1";
       }, 150);
     });
-
-    observer.observe(subtitleBox, {
-      childList: true
-    });
+    observer.observe(subtitleBox, { childList: true, subtree: true });
   }
 });
 
 // ===============================
-// 🎤 Status Indicator (Optional)
+// 🎤 Mic Status (optional visual cue)
 // ===============================
-
-// Detect mic usage visually
 function showMicStatus(active) {
   const subtitleBox = document.getElementById("subtitleBox");
   if (!subtitleBox) return;
-
   if (active) {
     subtitleBox.style.border = "2px solid #22c55e";
   } else {
@@ -73,13 +63,11 @@ function showMicStatus(active) {
 }
 
 // ===============================
-// 🌐 Network Status (Optional)
+// 🌐 Network Status (optional alerts)
 // ===============================
-
 window.addEventListener("online", () => {
   console.log("🌐 Internet connected");
 });
-
 window.addEventListener("offline", () => {
   alert("⚠️ Internet disconnected - Speech may stop");
 });
