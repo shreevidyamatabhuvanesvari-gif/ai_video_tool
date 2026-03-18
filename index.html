@@ -1,113 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Voice Extractor</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Subtitle App</title>
 
-<style>
-body{
-font-family:Arial;
-background:#0f172a;
-color:white;
-text-align:center;
-padding:20px;
-}
-
-.panel{
-background:#1e293b;
-padding:20px;
-border-radius:15px;
-max-width:400px;
-margin:auto;
-}
-
-button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:8px;
-background:#22c55e;
-color:white;
-}
-
-audio{
-width:100%;
-margin-top:10px;
-}
-</style>
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="panel">
+  <div class="container">
 
-<h2>🎤 Voice Extractor</h2>
+    <h1>🎬 Video Subtitle App</h1>
 
-<input type="file" id="file" accept="audio/*,video/*">
+    <!-- Video Upload -->
+    <input type="file" id="videoInput" accept="video/*">
 
-<button onclick="process()">🚀 Remove Music</button>
+    <!-- Video Player -->
+    <video id="videoPlayer" controls></video>
 
-<p id="status"></p>
+    <!-- Subtitle Display -->
+    <div id="subtitleBox">यहाँ subtitles दिखाई देंगे...</div>
 
-<audio id="audio" controls></audio>
+    <!-- Start Button -->
+    <button id="startBtn">🎤 Start Speech Recognition</button>
 
-<a id="download" style="display:none;" download="voice.wav">
-<button>⬇ Download</button>
-</a>
+  </div>
 
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
-
-<script>
-
-const { createFFmpeg, fetchFile } = FFmpeg;
-
-const ffmpeg = createFFmpeg({ log: true });
-
-async function process(){
-
-let file = document.getElementById("file").files[0];
-
-if(!file){
-alert("File select करें");
-return;
-}
-
-document.getElementById("status").innerText="Processing...";
-
-if(!ffmpeg.isLoaded()){
-await ffmpeg.load();
-}
-
-// input
-ffmpeg.FS("writeFile", "input.mp4", await fetchFile(file));
-
-// 🎯 VOICE FOCUS FILTER
-await ffmpeg.run(
-"-i", "input.mp4",
-"-af",
-"highpass=f=200,lowpass=f=3000,afftdn=nf=-25",
-"output.wav"
-);
-
-// output
-let data = ffmpeg.FS("readFile", "output.wav");
-
-let url = URL.createObjectURL(new Blob([data.buffer], {type: "audio/wav"}));
-
-document.getElementById("audio").src = url;
-
-let link = document.getElementById("download");
-link.href = url;
-link.style.display="block";
-
-document.getElementById("status").innerText="Done";
-
-}
-
-</script>
+  <!-- JS -->
+  <script src="script.js"></script>
 
 </body>
 </html>
