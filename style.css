@@ -1,0 +1,108 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Body */
+body {
+  background: #0f172a;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Container */
+.container {
+  width: 95%;
+  max-width: 500px;
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+/* Heading */
+h1 {
+  margin-bottom: 15px;
+  font-size: 22px;
+}
+
+/* Upload Section */
+.upload-section input {
+  width: 100%;
+  padding: 10px;
+  background: #334155;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Video */
+.video-section {
+  margin-top: 15px;
+}
+
+video {
+  width: 100%;
+  border-radius: 10px;
+  background: black;
+}
+
+/* Subtitle Box */
+.subtitle-section {
+  margin-top: 15px;
+  background: rgba(0,0,0,0.7);
+  padding: 12px;
+  border-radius: 10px;
+  min-height: 50px;
+}
+
+#subtitleBox {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #38bdf8;
+}
+
+/* Controls */
+.controls {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Start Button */
+#startBtn {
+  background: #22c55e;
+  color: white;
+}
+
+#startBtn:hover {
+  background: #16a34a;
+}
+
+/* Stop Button */
+#stopBtn {
+  background: #ef4444;
+  color: white;
+}
+
+#stopBtn:hover {
+  background: #dc2626;
+}
