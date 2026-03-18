@@ -92,7 +92,6 @@ button {
   background: #22c55e;
   color: white;
 }
-
 #startBtn:hover {
   background: #16a34a;
 }
@@ -102,7 +101,6 @@ button {
   background: #ef4444;
   color: white;
 }
-
 #stopBtn:hover {
   background: #dc2626;
 }
