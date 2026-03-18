@@ -1,0 +1,60 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node modules (future use)
+node_modules/
+
+# Build / dist
+dist/
+build/
+
+# Environment files
+.env
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Coverage
+coverage/
+
+# Mac system files
+.AppleDouble
+.LSOverride
+
+# Windows system files
+ehthumbs.db
+Desktop.ini
+
+# Android / APK (future if generated)
+*.apk
+
+# Zip files
+*.zip
+
+# Video files (avoid large uploads)
+assets/videos/*.mp4
+assets/videos/*.avi
+assets/videos/*.mov
+
+# Icons (optional large files)
+assets/icons/*.psd
+assets/icons/*.ai
